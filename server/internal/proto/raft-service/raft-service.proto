@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package raftservice;
+
+option go_package = "/home/anton/disributed-manager/pkg/raftservice";
+
+service TaskService {
+  rpc SubmitTask (TaskRequest) returns (TaskResponse);
+  rpc GetTask (GetTaskRequest) returns (GetTaskResponse);
+}
+
+message TaskRequest {
+  string task = 1;
+}
+
+message TaskResponse {
+  bool success = 1;
+}
+
+message GetTaskRequest {
+  string id = 1;
+}
+
+message GetTaskResponse {
+  string data = 1;
+}

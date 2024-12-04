@@ -1,0 +1,33 @@
+server:
+  http:
+    host: "0.0.0.0"
+    port: 8080
+    read_timeout: 10s
+    write_timeout: 10s
+
+  grpc:
+    host: "0.0.0.0"
+    port: 50051
+    max_concurrent_streams: 100
+
+database:
+  postgres:
+    host: "localhost"
+    port: 5432
+    user: "your_user"
+    password: "your_password"
+    dbname: "your_database"
+    sslmode: "disable"
+
+  boltdb:
+    path: "disributed-manager/trash/raft-log.db"
+    read_only: false
+
+logging:
+  level: "info"
+  format: "json"
+  output: "stdout"
+
+features:
+  enable_feature_x: true
+  enable_feature_y: false

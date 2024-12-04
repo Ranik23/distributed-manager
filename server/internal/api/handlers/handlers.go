@@ -1,23 +1,42 @@
 package handlers
 
 import (
-	"distributed-manager/server/internal/server"
+	"context"
+	"distributed-manager/server/internal/server/http-server"
+	raftservice "distributed-manager/server/pkg"
 	"github.com/gin-gonic/gin"
 )
 
 
 
-func TaskCreate(srv *server.Server) func (*gin.Context) {
-	// empty
+func TaskCreateHandler(srv *server.Server) func (*gin.Context) {
 	return func(g *gin.Context) {
-		g.JSON(201, gin.H{"message": "Task Created"})
+		request := raftservice.TaskRequest{
+			Task: "Hello",
+		}
+		response, err := srv.GRPCServer.SubmitTask(context.Background(), &request)
+		if err != nil {
+			g.JSON(500, gin.H{"error": err.Error()})
+			return
+		}
+		g.JSON(201, gin.H{"message": "Task Created", "success": response.Success})
 	}
 }
 
-func GetTask(srv server.Server) func (*gin.Context) {
-	//empty
+func TaskGetHandler(srv *server.Server) func (*gin.Context) {
 	return func(g *gin.Context) {
 		taskID := g.Param("id")
-		g.JSON(200, gin.H{"taskID": taskID, "status": "completed"})
+
+		request := raftservice.GetTaskRequest{
+			Id: taskID,
+		}
+
+		response, err := srv.GRPCServer.GetTask(context.Background(), &request)
+		if err != nil {
+			g.JSON(500, gin.H{"error": err.Error()})
+			return
+		}
+
+		g.JSON(200, gin.H{"taskID": taskID, "status": "completed", "content": response.GetData()})
 	}
 }
